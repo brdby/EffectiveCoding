@@ -1,4 +1,5 @@
-package com.brdby;
+
+import huffman.Coder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,6 +31,18 @@ public class Main {
 
             System.out.println("\nP*logP:");
             System.out.println(counter.getSymPlogP());
+
+            System.out.println("\nЭнтропия ансамбля:");
+            System.out.println(counter.entropy());
+
+            System.out.println("\nСредняя длина:");
+            System.out.println(counter.averageLenght());
+
+            Coder huffman = counter.getHuffmanCoder();
+
+            System.out.println(huffman.getCodes());
+
+            huffman.getGraph().display();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,4 +1,4 @@
-package com.brdby;
+import huffman.Coder;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -13,6 +13,7 @@ public class Counter {
     private LinkedHashMap<Character, Double> symPQ = new LinkedHashMap<>();
     private LinkedHashMap<Character, Double> symPlogP = new LinkedHashMap<>();
 
+    private Coder huffman;
     private int symNum = 0;
     private String text;
 
@@ -21,6 +22,7 @@ public class Counter {
         count();
         code();
         calculate();
+        huffman = new Coder(sym);
     }
 
     private void count() {
@@ -86,6 +88,10 @@ public class Counter {
         return pos1;
     }
 
+    public Coder getHuffmanCoder(){
+        return huffman;
+    }
+
     private void calculate(){
         symCodes.forEach( (k,v) -> symCodesLenght.put(k, v.length()));
         symProb.forEach( (k,v) -> symPQ.put(k, v*symCodesLenght.get(k)));
@@ -118,5 +124,21 @@ public class Counter {
 
     public int getSymNum() {
         return symNum;
+    }
+
+    public double entropy() {
+        double ent = 0;
+        for (char key : symPlogP.keySet()) {
+            ent += symPlogP.get(key);
+        }
+        return ent;
+    }
+
+    public double averageLenght(){
+        double sum = 0;
+        for (char key : symCodesLenght.keySet()){
+            sum += symCodesLenght.get(key);
+        }
+        return sum/symCodesLenght.size();
     }
 }
