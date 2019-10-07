@@ -1,6 +1,7 @@
 
 import huffman.Coder;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -40,9 +41,11 @@ public class Main {
 
             Coder huffman = counter.getHuffmanCoder();
 
+            System.out.println("\nМетод Хаффмана:");
             System.out.println(huffman.getCodes());
 
-            huffman.getGraph().display();
+            JFrame huffmanTree = huffman.getHuffmanFrame();
+            huffmanTree.setVisible(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

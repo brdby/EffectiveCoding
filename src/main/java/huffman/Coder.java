@@ -1,8 +1,9 @@
 package huffman;
 
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.SingleGraph;
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.view.mxGraph;
 
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
@@ -10,17 +11,29 @@ import java.util.TreeMap;
 public class Coder {
     private PriorityQueue<Node> nodesQueue = new PriorityQueue<>();
     private HashSet<Node> allNodes = new HashSet<>();
-    private Graph graph;
+    private mxGraph graph;
 
     public Coder(TreeMap<Character, Integer> map) {
-        graph = new SingleGraph("Huffman");
-        map.forEach((k, v) -> {
-            Node node = new Node(k, v);
-            nodesQueue.add(node);
-            allNodes.add(node);
-            graph.addNode(node.toString());
-        });
-        code();
+        //Creating graph
+        graph = new mxGraph();
+        Object grParent = graph.getDefaultParent();
+        graph.getModel().beginUpdate();
+
+        try {
+            map.forEach((k, v) -> {
+                Node node = new Node(k, v);
+                nodesQueue.add(node);
+                allNodes.add(node);
+                node.setGraphObject(graph.insertVertex(grParent, null, node.toString(), 0, 0, 100, 40));
+            });
+            code();
+
+            mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
+            layout.setUseBoundingBox(false);
+            layout.execute(grParent);
+        } finally {
+            graph.getModel().endUpdate();
+        }
     }
 
     private void code() {
@@ -33,9 +46,16 @@ public class Coder {
             a.setParent(parent);
             b.setParent(parent);
             nodesQueue.add(parent);
-            graph.addNode(parent.toString());
-            graph.addEdge(a.toString() + parent.toString(), a.toString(), parent.toString());
-            graph.addEdge(b.toString() + parent.toString(), b.toString(), parent.toString());
+
+            Object grParent = graph.getDefaultParent();
+            Object parentVer = graph.insertVertex(grParent, null, parent.toString(), 0, 0, 100, 40);
+            Object aVer = a.getGraphObject();
+            Object bVer = b.getGraphObject();
+
+            parent.setGraphObject(parentVer);
+
+            graph.insertEdge(grParent, null, "1", parentVer, aVer);
+            graph.insertEdge(grParent, null, "0", parentVer, bVer);
         }
     }
 
@@ -54,7 +74,7 @@ public class Coder {
         return map;
     }
 
-    public Graph getGraph() {
-        return graph;
+    public JFrame getHuffmanFrame(){
+        return new HuffmanFrame(graph);
     }
 }

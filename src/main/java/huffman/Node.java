@@ -6,6 +6,7 @@ public class Node implements Comparable<Node>{
     private char ch;
     private String name;
     private Node parent;
+    private Object graphObject;
 
     public Node(int weight, String name){
         this.weight = weight;
@@ -30,7 +31,7 @@ public class Node implements Comparable<Node>{
 
     @Override
     public String toString() {
-        return name + " node";
+        return name + " - " + weight;
     }
 
     public Node getParent() {
@@ -55,5 +56,13 @@ public class Node implements Comparable<Node>{
 
     public void setCode(char code) {
         this.code = code;
+    }
+
+    public Object getGraphObject() {
+        return graphObject;
+    }
+
+    public void setGraphObject(Object graphObject) {
+        this.graphObject = graphObject;
     }
 }
