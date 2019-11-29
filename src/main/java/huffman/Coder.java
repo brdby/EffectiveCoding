@@ -69,7 +69,7 @@ public class Coder {
                 code.append(temp.getCode());
                 temp = temp.getParent();
             }
-            map.put(a.getChar(), code.toString());
+            map.put(a.getChar(), new StringBuilder(code.toString()).reverse().toString());
         }
         return map;
     }

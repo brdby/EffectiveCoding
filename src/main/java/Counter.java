@@ -1,4 +1,5 @@
 import huffman.Coder;
+import org.apache.commons.math3.util.Precision;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -40,7 +41,10 @@ public class Counter {
             } else sym.put(c, 1);
         }
 
-        sym.forEach((k, v) -> symProb.put(k, v / (double) symNum));
+        sym.forEach((k, v) -> {
+            double t = v / (double) symNum;
+            symProb.put(k, Precision.round(t, 4));
+        });
         symProb = symProb
                 .entrySet()
                 .stream()
@@ -64,7 +68,7 @@ public class Counter {
         if (pos1 != pos2) {
             int center = findCenter(pos1, pos2, keys);
             System.out.println("Центральная буква - " + (char)keys[center]);
-            if (target >= center + 1) {
+            if (target > center) {
                 output.append('0');
                 searchTree(output, center + 1, pos2, target, keys);
             } else {
@@ -75,7 +79,9 @@ public class Counter {
     }
 
     private int findCenter(int pos1, int pos2, Object[] keys) {
-        double sum = 0;
+        LinkedHashMap<Integer, Double> diff = new LinkedHashMap<>();
+
+        /*double sum = 0;
         for (int i = pos1; i <= pos2; i++){
             sum += symProb.get(keys[i]);
         }
@@ -85,7 +91,24 @@ public class Counter {
             subSum += symProb.get(keys[i]);
             if (subSum > sum/2.0 && i != pos1) return i-1;
         }
-        return pos1;
+         */
+        double sum1 = 0;
+        for (int i = pos1; i < pos2; i++){
+            sum1 += symProb.get(keys[i]);
+            double sum2 = 0;
+            for (int k = i+1; k <= pos2; k++){
+                sum2 += symProb.get(keys[k]);
+                diff.put(i, Math.abs(sum1-sum2));
+            }
+        }
+
+        int max = pos1;
+
+        for (int key : diff.keySet()){
+            if (diff.get(key) < diff.get(max)) max = key;
+        }
+
+        return max;
     }
 
     public Coder getHuffmanCoder(){
@@ -95,7 +118,7 @@ public class Counter {
     private void calculate(){
         symCodes.forEach( (k,v) -> symCodesLenght.put(k, v.length()));
         symProb.forEach( (k,v) -> symPQ.put(k, v*symCodesLenght.get(k)));
-        symProb.forEach( (k,v) -> symPlogP.put(k, -v*(Math.log(v)/Math.log(2))));
+        symProb.forEach( (k,v) -> symPlogP.put(k, -v*(Math.log10(v)/Math.log10(2))));
     }
 
     public Map<Character, Double> getSymProb() {
@@ -136,9 +159,11 @@ public class Counter {
 
     public double averageLenght(){
         double sum = 0;
-        for (char key : symCodesLenght.keySet()){
-            sum += symCodesLenght.get(key);
+        for (char key : symPQ.keySet()){
+            sum += symPQ.get(key);
         }
-        return sum/symCodesLenght.size();
+        return sum;
     }
+
+
 }
