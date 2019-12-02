@@ -42,7 +42,7 @@ public class Main {
             Coder huffman = counter.getHuffmanCoder();
 
             System.out.println("\nМетод Хаффмана:");
-            System.out.println(huffman.getCodes());
+            System.out.println(counter.getHuffmanInfo());
 
             JFrame huffmanTree = huffman.getHuffmanFrame();
             huffmanTree.setVisible(true);

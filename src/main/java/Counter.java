@@ -13,6 +13,8 @@ public class Counter {
     private LinkedHashMap<Character, Integer> symCodesLenght = new LinkedHashMap<>();
     private LinkedHashMap<Character, Double> symPQ = new LinkedHashMap<>();
     private LinkedHashMap<Character, Double> symPlogP = new LinkedHashMap<>();
+    private LinkedHashMap<Character, Integer> huffCodesLenght = new LinkedHashMap<>();
+    private LinkedHashMap<Character, Double> huffPQ = new LinkedHashMap<>();
 
     private Coder huffman;
     private int symNum = 0;
@@ -165,5 +167,15 @@ public class Counter {
         return sum;
     }
 
-
+    public double getHuffmanInfo() {
+        var a = huffman.getCodes();
+        System.out.println(a);
+        a.forEach( (k,v) -> huffCodesLenght.put(k, v.length()));
+        symProb.forEach( (k,v) -> huffPQ.put(k, v*huffCodesLenght.get(k)));
+        double sum = 0;
+        for (char key : huffPQ.keySet()){
+            sum += huffPQ.get(key);
+        }
+        return sum;
+    }
 }
